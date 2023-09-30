@@ -32,7 +32,21 @@ namespace Inputs
 
             currentHoveredNode?.SetIsHovered(false);
             currentHoveredNode = node;
-            currentHoveredNode?.SetIsHovered(true);
+            
+            if (!isNodeOnDiagonal(node))
+            {
+                currentHoveredNode?.SetIsHovered(true);
+            }
+        }
+
+        bool isNodeOnDiagonal(Node node)
+        {
+            if (node == null || currentSelectedNode == null)
+            {
+                return false;
+            }
+            
+            return node.XY.x != currentSelectedNode.XY.x && node.XY.y != currentSelectedNode.XY.y;
         }
 
         public override void OnLeftMouseDown()
