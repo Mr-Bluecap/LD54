@@ -5,6 +5,12 @@ public class RoomCalculator : MonoBehaviour
 {
     public static RoomCalculator Instance;
 
+    [SerializeField]
+    RoomSquare roomSquarePrefab;
+
+    [SerializeField]
+    Transform roomSquareHolder;
+    
     List<RoomSquare> allRoomSquares;
 
     List<Room> allRooms;
@@ -120,7 +126,8 @@ public class RoomCalculator : MonoBehaviour
 
                 CreateAllLinesForRoomSquare(bottomLeftNode, topLeftNode, bottomRightNode, topRightNode, ref openRoomLines, ref closedRoomLines);
 
-                var newRoomSquare = new RoomSquare() { Name = bottomLeftNode.name, OpenRoomLines = openRoomLines };
+                var newRoomSquare = Instantiate(roomSquarePrefab, roomSquareHolder);
+                newRoomSquare.Setup(bottomLeftNode, openRoomLines);
                 allRoomSquares.Add(newRoomSquare);
             }
         }

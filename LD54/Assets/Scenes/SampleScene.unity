@@ -236,6 +236,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c5f2248dd12c104083bf1464931972c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomSquarePrefab: {fileID: 0}
+  roomSquareHolder: {fileID: 745939466}
 --- !u!4 &745939466
 Transform:
   m_ObjectHideFlags: 0
@@ -392,7 +394,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1281708952}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 8.1535, y: 4.2936, z: -0.00000035762787}
+  m_LocalPosition: {x: 8.1535, y: 4.2936, z: 1.5}
   m_LocalScale: {x: 2.0807, y: 1, z: 1.2587}
   m_ConstrainProportionsScale: 0
   m_Children: []

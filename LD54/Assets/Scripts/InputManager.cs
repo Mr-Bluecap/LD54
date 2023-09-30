@@ -9,14 +9,10 @@ public class InputManager : MonoBehaviour
     
     [SerializeField]
     LayerMask cameraMovementLayerMask;
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
+    Node currentSelectedNode;
+    Node currentHoveredNode;
+    
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -26,11 +22,18 @@ public class InputManager : MonoBehaviour
             {
                 return;
             }
+
+            currentSelectedNode = node;
+            currentSelectedNode.SetIsSelected(true);
             
-            LineDrawer.Instance.StartLine(node);
+            LineDrawer.Instance.StartLine(currentSelectedNode);
         }
         else if (Input.GetMouseButton(0))
         {
+            currentHoveredNode?.SetIsHovered(false);
+            currentHoveredNode = GetNodeFromMousePosition();
+            currentHoveredNode?.SetIsHovered(true);
+            
             var possiblePosition = GetWorldPositionFromMousePosition(Input.mousePosition);
             if (possiblePosition == null)
             {
@@ -43,21 +46,23 @@ public class InputManager : MonoBehaviour
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            var node = GetNodeFromMousePosition();
-            if (node == null)
+            currentSelectedNode.SetIsSelected(false);
+            currentHoveredNode?.SetIsHovered(false);
+            
+            currentHoveredNode = GetNodeFromMousePosition();
+            if (currentHoveredNode == null)
             {
                 LineDrawer.Instance.DestroyLine();
                 return;
             }
 
-            if (LineDrawer.Instance.FinishLine(node, out var line))
+            if (LineDrawer.Instance.FinishLine(currentHoveredNode, out var line))
             {
                 //Update room list
                 RoomLineManager.Instance.AddLine(line);
                 RoomCalculator.Instance.CreateRooms();
             }
         }
-
         
         if (!LineDrawer.Instance.IsDrawing && Input.GetMouseButtonUp(1))
         {

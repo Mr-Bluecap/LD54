@@ -27,6 +27,7 @@ public class LineDrawer : MonoBehaviour
         currentLine.SetStartNode(startNode);
 
         var startPosition = startNode.transform.position;
+        startPosition.z = 0.5f;
         
         currentLine.SetPosition(0, startPosition);
         UpdateLine(startPosition);
@@ -38,6 +39,8 @@ public class LineDrawer : MonoBehaviour
         {
             return;
         }
+
+        newEndPosition.z = 0.5f;
         
         currentLine.SetPosition(1, newEndPosition);
     }
@@ -52,6 +55,7 @@ public class LineDrawer : MonoBehaviour
         }
         
         var endPosition = endNode.transform.position;
+        endPosition.z = 0.5f;
         
         if (endPosition == currentLine.GetPosition(0))
         {
