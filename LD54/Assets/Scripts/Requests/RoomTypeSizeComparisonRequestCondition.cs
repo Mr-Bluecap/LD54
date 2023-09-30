@@ -20,4 +20,15 @@ public class RoomTypeSizeComparisonRequestCondition : SizeComparisonRequestCondi
 
         return totalSize;
     }
+
+    public override int NumberOfRoomsRequired()
+    {
+        return comparisonType switch
+        {
+            ComparisonType.Less_Than => 1,
+            ComparisonType.Equal_To => size,
+            ComparisonType.Greater_Than => size + 1,
+            _ => size
+        };
+    }
 }

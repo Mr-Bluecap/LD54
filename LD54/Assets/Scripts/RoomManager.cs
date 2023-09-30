@@ -19,6 +19,7 @@ public class RoomManager : MonoBehaviour
     Dictionary<RoomSquare, bool> roomSquaresToCheck;
 
     public List<Room> AllRooms => allRooms;
+    public List<RoomSquare> AllRoomSquares => allRoomSquares;
 
     void Awake()
     {
@@ -101,7 +102,7 @@ public class RoomManager : MonoBehaviour
                     continue;
                 }
 
-                var adjacentRoom = (RoomSquare)possibleAdjacentRoom;
+                var adjacentRoom = possibleAdjacentRoom;
                 
                 if (!openSet.Contains(adjacentRoom) && roomSquaresToCheck[adjacentRoom])
                 {
@@ -162,7 +163,7 @@ public class RoomManager : MonoBehaviour
 
                 if (bottomLeftNode == null || topLeftNode == null || bottomRightNode == null || topRightNode == null)
                 {
-                    return;
+                    continue;
                 }
                 
                 CreateAllLinesForRoomSquare(bottomLeftNode, topLeftNode, bottomRightNode, topRightNode, ref openRoomLines, ref closedRoomLines);

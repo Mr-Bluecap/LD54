@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         GenerateMap();
-        //Create Request
+        GenerateRequest();
         StartLevelTimer();
     }
 
@@ -34,6 +34,6 @@ public class GameManager : MonoBehaviour
 
     void GenerateRequest()
     {
-        
+        RequestGenerator.Instance.GenerateRequest();
     }
 }
