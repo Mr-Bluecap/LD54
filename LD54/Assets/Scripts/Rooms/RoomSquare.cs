@@ -3,6 +3,12 @@ using UnityEngine;
 
 public class RoomSquare : MonoBehaviour
 {
+    [SerializeField]
+    SpriteRenderer sprite;
+
+    [SerializeField]
+    RoomTypeInfoHolder infoHolder;
+    
     public string Name { get; private set; }
     public List<RoomLine> OpenRoomLines { get; private set; }
 
@@ -13,5 +19,15 @@ public class RoomSquare : MonoBehaviour
         newPosition.z = 1;
         transform.localPosition = newPosition;
         OpenRoomLines = openRoomLines;
+    }
+
+    public void SetMaterial(Material newMaterial)
+    {
+        sprite.material = newMaterial;
+    }
+
+    public void DisplayRoomDetails(Room room)
+    {
+        infoHolder.DisplayInformation(room.CurrentRoomType);
     }
 }

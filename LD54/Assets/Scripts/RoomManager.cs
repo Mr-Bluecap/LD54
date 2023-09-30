@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoomCalculator : MonoBehaviour
+public class RoomManager : MonoBehaviour
 {
-    public static RoomCalculator Instance;
+    public static RoomManager Instance;
 
     [SerializeField]
     RoomSquare roomSquarePrefab;
@@ -14,23 +14,35 @@ public class RoomCalculator : MonoBehaviour
     List<RoomSquare> allRoomSquares;
 
     List<Room> allRooms;
+    List<Room> previousRooms;
+    
+    Dictionary<RoomSquare, bool> roomSquaresToCheck;
 
     void Awake()
     {
         Instance = this;
         
         allRooms = new List<Room>();
+        previousRooms = new List<Room>();
         allRoomSquares = new List<RoomSquare>();
         roomSquaresToCheck = new Dictionary<RoomSquare, bool>();
     }
 
     public void CreateRooms()
     {
+        previousRooms = new List<Room>(allRooms);
         allRooms.Clear();
+
+        for (int i = allRoomSquares.Count - 1; i >= 0; i--)
+        {
+            Destroy(allRoomSquares[i].gameObject);
+        }
+        
         allRoomSquares.Clear();
         
         CalculateRoomSquares();
         CalculateRooms();
+        UpdateRoomTypes();
 
         for (int i = 0; i < allRooms.Count; i++)
         {
@@ -38,8 +50,19 @@ public class RoomCalculator : MonoBehaviour
         }
     }
 
-    Dictionary<RoomSquare, bool> roomSquaresToCheck;
-    
+    public Room? GetRoomFromRoomSquare(RoomSquare roomSquare)
+    {
+        foreach (var possibleRoom in allRooms)
+        {
+            if (possibleRoom.RoomSquares.Contains(roomSquare))
+            {
+                return possibleRoom;
+            }
+        }
+
+        return null;
+    }
+
     void CalculateRooms()
     {
         roomSquaresToCheck.Clear();
@@ -56,7 +79,6 @@ public class RoomCalculator : MonoBehaviour
                 allRooms.Add(room);
             }
         }
-        
     }
 
     Room CreateRoom(RoomSquare startingRoomSquare)
@@ -94,7 +116,7 @@ public class RoomCalculator : MonoBehaviour
         return newRoom;
     }
 
-    RoomSquare? GetAdjacentRoomSquare(RoomSquare originalSquare, RoomLine roomLine)
+    RoomSquare GetAdjacentRoomSquare(RoomSquare originalSquare, RoomLine roomLine)
     {
         foreach (var roomSquare in allRoomSquares)
         {
@@ -105,6 +127,23 @@ public class RoomCalculator : MonoBehaviour
         }
 
         return null;
+    }
+
+    void UpdateRoomTypes()
+    {
+        foreach (var newRoom in allRooms)
+        {
+            foreach (var oldRoom in previousRooms)
+            {
+                if (newRoom.IsMatchingRoom(oldRoom))
+                {
+                    newRoom.SetRoomType(oldRoom.CurrentRoomType);
+                    break;
+                }
+            }
+            
+            newRoom.SetRoomType(RoomTypeAssignmentManager.Instance.DefaultRoomType);
+        }
     }
 
     void CalculateRoomSquares()
