@@ -18,6 +18,8 @@ public class RoomManager : MonoBehaviour
     
     Dictionary<RoomSquare, bool> roomSquaresToCheck;
 
+    public List<Room> AllRooms => allRooms;
+
     void Awake()
     {
         Instance = this;
@@ -43,11 +45,6 @@ public class RoomManager : MonoBehaviour
         CalculateRoomSquares();
         CalculateRooms();
         UpdateRoomTypes();
-
-        for (int i = 0; i < allRooms.Count; i++)
-        {
-            Debug.LogError($"Room {allRooms[i].Name} has a size of {allRooms[i].Size}");
-        }
     }
 
     public Room? GetRoomFromRoomSquare(RoomSquare roomSquare)
@@ -133,6 +130,8 @@ public class RoomManager : MonoBehaviour
     {
         foreach (var newRoom in allRooms)
         {
+            newRoom.SetRoomType(RoomTypeAssignmentManager.Instance.DefaultRoomType);
+            
             foreach (var oldRoom in previousRooms)
             {
                 if (newRoom.IsMatchingRoom(oldRoom))
@@ -141,8 +140,6 @@ public class RoomManager : MonoBehaviour
                     break;
                 }
             }
-            
-            newRoom.SetRoomType(RoomTypeAssignmentManager.Instance.DefaultRoomType);
         }
     }
 
@@ -163,6 +160,11 @@ public class RoomManager : MonoBehaviour
                 var bottomRightNode = NodeManager.Instance.GetNode(node.XY.x + 1, node.XY.y);
                 var topRightNode = NodeManager.Instance.GetNode(node.XY.x + 1, node.XY.y + 1);
 
+                if (bottomLeftNode == null || topLeftNode == null || bottomRightNode == null || topRightNode == null)
+                {
+                    return;
+                }
+                
                 CreateAllLinesForRoomSquare(bottomLeftNode, topLeftNode, bottomRightNode, topRightNode, ref openRoomLines, ref closedRoomLines);
 
                 var newRoomSquare = Instantiate(roomSquarePrefab, roomSquareHolder);

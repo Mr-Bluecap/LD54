@@ -9,9 +9,13 @@ public class RoomLine : MonoBehaviour
     Node endNode;
 
     BoxCollider boxCollider;
+
+    bool isIndestructible;
     
     public Node StartNode => startNode;
     public Node EndNode => endNode;
+
+    public bool IsIndestructible => isIndestructible;
 
     public void SetStartNode(Node newNode)
     {
@@ -21,6 +25,11 @@ public class RoomLine : MonoBehaviour
     public void SetEndNode(Node newNode)
     {
         endNode = newNode;
+    }
+
+    public void SetIsIndestructible(bool isIndestructible)
+    {
+        this.isIndestructible = isIndestructible;
     }
     
     public void SetPosition(int index, Vector3 position)

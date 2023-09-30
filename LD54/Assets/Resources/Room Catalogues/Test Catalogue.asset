@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fbe5713780740fd952324272ab91b67, type: 3}
+  m_Name: Test Catalogue
+  m_EditorClassIdentifier: 
+  defaultRoomType: {fileID: 11400000, guid: 56608fc4649086c4fa1a245020b7ebb6, type: 2}
+  defaultRoomColour: {fileID: 2100000, guid: 43c3e0bace31468468ece8625d4f2168, type: 2}
+  roomCategories:
+  - {fileID: 11400000, guid: 49e149594d3eae8428092d72efa15153, type: 2}
+  - {fileID: 11400000, guid: 8c0d819b79f93674e87d501cce2b8d1a, type: 2}

@@ -8,47 +8,29 @@ public class RoomTypeAssignmentManager : MonoBehaviour
     public static RoomTypeAssignmentManager Instance;
 
     [SerializeField]
+    RoomCatalogue roomCatalogue;
+    
+    [SerializeField]
     RoomTypeButton roomTypeButton;
-        
-    [SerializeField]
-    RoomCategory defaultRoomCategory;
-
-    [SerializeField]
-    List<RoomCategory> roomCategories;
 
     [SerializeField]
     Transform buttonHolder;
     
     public RoomType CurrentSelectedRoomType => currentSelectedRoomType;
-    public RoomType DefaultRoomType => defaultRoomCategory.RoomTypes[0];
+    public RoomType DefaultRoomType => roomCatalogue.defaultRoomType;
     
     RoomType currentSelectedRoomType;
 
     void Awake()
     {
         Instance = this;
-
-        AssignCategoryColourToRoomTypes();
     }
 
     void Start()
     {
-        foreach (var category in roomCategories)
+        foreach (var category in roomCatalogue.roomCategories)
         {
             SpawnButtonsForCategory(category);
-        }
-    }
-
-    void AssignCategoryColourToRoomTypes()
-    {
-        defaultRoomCategory.RoomTypes[0].AssignCategoryColour(defaultRoomCategory.RoomColour);
-        
-        foreach (var category in roomCategories)
-        {
-            foreach (var roomType in category.RoomTypes)
-            {
-                roomType.AssignCategoryColour(category.RoomColour);
-            }
         }
     }
 
@@ -65,28 +47,5 @@ public class RoomTypeAssignmentManager : MonoBehaviour
     {
         Debug.LogWarning($"[ROOM TYPES] Selected room type: {roomType.Name}");
         currentSelectedRoomType = roomType;
-    }
-}
-
-[System.Serializable]
-public struct RoomCategory
-{
-    public string Name;
-    public Material RoomColour;
-    public List<RoomType> RoomTypes;
-}
-
-[System.Serializable]
-public class RoomType
-{
-    public string Name;
-    public Sprite Icon;
-    public Material RoomColour => roomColour;
-
-    Material roomColour;
-
-    public void AssignCategoryColour(Material newRoomColour)
-    {
-        roomColour = newRoomColour;
     }
 }

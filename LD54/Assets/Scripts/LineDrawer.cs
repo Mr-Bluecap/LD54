@@ -72,6 +72,14 @@ public class LineDrawer : MonoBehaviour
         return true;
     }
 
+    public RoomLine CreatePermanentRoomLine(Node startNode, Node endNode)
+    {
+        var newLine = CreateLine(startNode, endNode);
+        newLine.SetIsIndestructible(true);
+
+        return newLine;
+    }
+    
     public RoomLine CreateLine(Node startNode, Node endNode)
     {
         StartLine(startNode);
@@ -105,7 +113,7 @@ public class LineDrawer : MonoBehaviour
     {
         IsDrawing = false;
         
-        if (lineToDestroy == null)
+        if (lineToDestroy == null || lineToDestroy.IsIndestructible)
         {
             return;
         }

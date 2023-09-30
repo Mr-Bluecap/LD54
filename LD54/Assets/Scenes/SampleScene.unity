@@ -152,28 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 211ee23e1abc419b925d3e7f172e0775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomCatalogue: {fileID: 11400000, guid: 9f13bda9863993740873a1dae8f734e9, type: 2}
   roomTypeButton: {fileID: 8446235165906853120, guid: 87265b5ad6f085744b4d1dae340e0124, type: 3}
-  defaultRoomCategory:
-    Name: Default
-    RoomColour: {fileID: 2100000, guid: 43c3e0bace31468468ece8625d4f2168, type: 2}
-    RoomTypes:
-    - Name: Empty
-      Icon: {fileID: 0}
-  roomCategories:
-  - Name: Green
-    RoomColour: {fileID: 2100000, guid: 6e0e5738b19e6864abe70defd27fee18, type: 2}
-    RoomTypes:
-    - Name: Garden
-      Icon: {fileID: 21300000, guid: 62ce01ddca719d34ea9648c586a7cc94, type: 3}
-    - Name: Tree
-      Icon: {fileID: 21300000, guid: 374643871a39dd44880f1c0eff14f46c, type: 3}
-  - Name: Orange
-    RoomColour: {fileID: 2100000, guid: 9f7f3a278f713fe4abe27a539261a4a4, type: 2}
-    RoomTypes:
-    - Name: Kitchen
-      Icon: {fileID: 21300000, guid: 00b8ce4a201871b498992f536279acf7, type: 3}
-    - Name: Dining Room
-      Icon: {fileID: 21300000, guid: 53537648d368cf6459e256af3d925e09, type: 3}
   buttonHolder: {fileID: 1746921442}
 --- !u!4 &186926632
 Transform:
@@ -189,6 +169,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &218601628
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 218601630}
+  - component: {fileID: 218601629}
+  m_Layer: 0
+  m_Name: Request Generator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &218601629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218601628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a616532ef0dea546a97deddf6b18e82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TESTrequest: {fileID: 0}
+--- !u!4 &218601630
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218601628}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
@@ -708,6 +733,51 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1315991908
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1315991910}
+  - component: {fileID: 1315991909}
+  m_Layer: 0
+  m_Name: Game Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1315991909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315991908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e92a0059b25130549af11c1450c8f630, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeInSeconds: 120
+--- !u!4 &1315991910
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315991908}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1406311380
 GameObject:
   m_ObjectHideFlags: 0

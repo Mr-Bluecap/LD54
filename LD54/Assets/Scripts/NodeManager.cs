@@ -4,13 +4,7 @@ using UnityEngine;
 public class NodeManager : MonoBehaviour
 {
     public static NodeManager Instance;
-    
-    [SerializeField]
-    int width;
 
-    [SerializeField]
-    int height;
-    
     [SerializeField]
     Node node;
 
@@ -22,8 +16,10 @@ public class NodeManager : MonoBehaviour
     Dictionary<int, List<Node>> nodesByRow;
     Dictionary<int, List<Node>> nodesByColumn;
 
-    public int Width => width;
-    public int Height => height;
+    LevelLayoutData levelLayout;
+    
+    public int Width => levelLayout.LevelWidth;
+    public int Height => levelLayout.LevelHeight;
 
     public List<Node> AllNodes => allNodes;
 
@@ -31,12 +27,11 @@ public class NodeManager : MonoBehaviour
     {
         Instance = this;
         allNodes = new List<Node>();
-        SetUpDictionaries();
     }
     
     void Start()
     {
-        CreateNodes();
+        //CreateNodes();
     }
 
     void SetUpDictionaries()
@@ -44,34 +39,66 @@ public class NodeManager : MonoBehaviour
         nodesByRow = new Dictionary<int, List<Node>>();
         nodesByColumn = new Dictionary<int, List<Node>>();
         
-        for (int y = 0; y < height; y++)
+        for (int y = 0; y < Height; y++)
         {
             nodesByRow.Add(y, new List<Node>());
         }
         
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < Width; x++)
         {
             nodesByColumn.Add(x, new List<Node>());
         }
     }
 
-    void CreateNodes()
+    // void CreateNodes()
+    // {
+    //     for (int y = 0; y < height; y++)
+    //     {
+    //         for (int x = 0; x < width; x++)
+    //         {
+    //             var newNode = Instantiate(node, nodeHolder);
+    //             newNode.transform.localPosition = new Vector3(x, y);
+    //             
+    //             newNode.SetPosition(x, y);
+    //             newNode.name = $"[{x}, {y}]";
+    //             
+    //             nodesByRow[y].Add(newNode);
+    //             nodesByColumn[x].Add(newNode);
+    //             allNodes.Add(newNode);
+    //         }
+    //     }
+    // }
+    
+    public void CreateNodesFromLevelLayout(LevelLayoutData levelLayout)
     {
-        for (int y = 0; y < height; y++)
+        this.levelLayout = levelLayout;
+        
+        SetUpDictionaries();
+        
+        for (int y = 0; y < Height; y++)
         {
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < Width; x++)
             {
+                var totalNodeIndex = y * Width + x;
+
+                if (!levelLayout.IsNodeIndexSpawnable(totalNodeIndex))
+                {
+                    continue;
+                }
+                
                 var newNode = Instantiate(node, nodeHolder);
                 newNode.transform.localPosition = new Vector3(x, y);
                 
                 newNode.SetPosition(x, y);
                 newNode.name = $"[{x}, {y}]";
-                
+
                 nodesByRow[y].Add(newNode);
                 nodesByColumn[x].Add(newNode);
                 allNodes.Add(newNode);
             }
         }
+        
+        RoomManager.Instance.CreateRooms();
     }
 
     public IEnumerable<Node> GetNodesByColumn(int columnNumber)
