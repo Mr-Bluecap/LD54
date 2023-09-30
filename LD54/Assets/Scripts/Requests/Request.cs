@@ -10,7 +10,7 @@ public class Request
         RequestConditions = requestConditions;
     }
 
-    bool EvaluateRequest(List<Room> roomLayout)
+    public bool EvaluateRequest(List<Room> roomLayout)
     {
         foreach (var condition in RequestConditions)
         {

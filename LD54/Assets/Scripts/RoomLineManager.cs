@@ -5,14 +5,14 @@ public class RoomLineManager : MonoBehaviour
 {
     public static RoomLineManager Instance;
 
-    HashSet<RoomLine> allRoomLines;
+    List<RoomLine> allRoomLines;
     List<RoomLine> allOpenRoomLines;
     
     void Awake()
     {
         Instance = this;
 
-        allRoomLines = new HashSet<RoomLine>();
+        allRoomLines = new List<RoomLine>();
         allOpenRoomLines = new List<RoomLine>();
     }
 
@@ -123,5 +123,21 @@ public class RoomLineManager : MonoBehaviour
         allOpenRoomLines.Add(newLine);
         Debug.LogWarning($"Added Line: {newLine.name}");
         return newLine;
+    }
+
+    public void DestroyAllLines()
+    {
+        for (int i = allRoomLines.Count - 1; i >= 0; i--)
+        {
+            Destroy(allRoomLines[i].gameObject);
+        }
+        
+        for (int i = allOpenRoomLines.Count - 1; i >= 0; i--)
+        {
+            Destroy(allOpenRoomLines[i].gameObject);
+        }
+        
+        allRoomLines.Clear();
+        allOpenRoomLines.Clear();
     }
 }

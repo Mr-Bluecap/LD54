@@ -17,7 +17,6 @@ public class RoomTypeButton : MonoBehaviour
     
     public void OnClicked()
     {
-        //TODO: Move to "tabs"
         MouseOptionsManager.ActivateAssignRoomTypeMode();
         RoomTypeAssignmentManager.Instance.SelectRoomType(roomType);
     }

@@ -28,11 +28,6 @@ public class NodeManager : MonoBehaviour
         Instance = this;
         allNodes = new List<Node>();
     }
-    
-    void Start()
-    {
-        //CreateNodes();
-    }
 
     void SetUpDictionaries()
     {
@@ -50,30 +45,13 @@ public class NodeManager : MonoBehaviour
         }
     }
 
-    // void CreateNodes()
-    // {
-    //     for (int y = 0; y < height; y++)
-    //     {
-    //         for (int x = 0; x < width; x++)
-    //         {
-    //             var newNode = Instantiate(node, nodeHolder);
-    //             newNode.transform.localPosition = new Vector3(x, y);
-    //             
-    //             newNode.SetPosition(x, y);
-    //             newNode.name = $"[{x}, {y}]";
-    //             
-    //             nodesByRow[y].Add(newNode);
-    //             nodesByColumn[x].Add(newNode);
-    //             allNodes.Add(newNode);
-    //         }
-    //     }
-    // }
-    
     public void CreateNodesFromLevelLayout(LevelLayoutData levelLayout)
     {
         this.levelLayout = levelLayout;
         
         SetUpDictionaries();
+
+        DeleteAllNodes();
         
         for (int y = 0; y < Height; y++)
         {
@@ -99,6 +77,16 @@ public class NodeManager : MonoBehaviour
         }
         
         RoomManager.Instance.CreateRooms();
+    }
+
+    void DeleteAllNodes()
+    {
+        for (int i = allNodes.Count - 1; i >= 0; i--)
+        {
+            DestroyImmediate(allNodes[i].gameObject);
+        }
+        
+        allNodes.Clear();
     }
 
     public IEnumerable<Node> GetNodesByColumn(int columnNumber)

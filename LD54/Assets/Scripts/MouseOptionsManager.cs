@@ -18,5 +18,11 @@ namespace DefaultNamespace
         {
             InputManager.Instance.SetInputType(InputType.AssignRoomType);
         }
+        
+        public static void ActivateClearAssignRoomTypeMode()
+        {
+            InputManager.Instance.SetInputType(InputType.AssignRoomType);
+            RoomTypeAssignmentManager.Instance.SelectRoomType(RoomTypeAssignmentManager.Instance.DefaultRoomType);
+        }
     }
 }

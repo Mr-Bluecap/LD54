@@ -82,7 +82,7 @@ public class Room
         GetCentralRoomSquare().DisplayRoomDetails(this);
     }
 
-    RoomSquare GetCentralRoomSquare()
+    public RoomSquare GetCentralRoomSquare()
     {
         var averageX = 0f;
         var averageY = 0f;

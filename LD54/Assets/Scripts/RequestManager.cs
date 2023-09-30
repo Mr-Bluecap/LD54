@@ -4,9 +4,9 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class RequestGenerator : MonoBehaviour
+public class RequestManager : MonoBehaviour
 {
-    public static RequestGenerator Instance;
+    public static RequestManager Instance;
 
     public Request currentRequest;
 
@@ -78,5 +78,14 @@ public class RequestGenerator : MonoBehaviour
         var randomIndex = Random.Range(0f, 1f);
 
         return randomIndex < percentageOfRoomsUsed;
+    }
+
+    public void CompleteRequest()
+    {
+        var isSuccessful = currentRequest.EvaluateRequest(RoomManager.Instance.AllRooms);
+        
+        Debug.LogError($"Was Succesful? {isSuccessful}");
+        
+        GameManager.Instance.CreateNewSequence();
     }
 }

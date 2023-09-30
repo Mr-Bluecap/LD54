@@ -30,12 +30,16 @@ namespace Inputs
                 return;
             }
 
-            currentHoveredNode?.SetIsHovered(false);
+            if (currentHoveredNode != null)
+            {
+                currentHoveredNode.SetIsHovered(false);
+            }
+            
             currentHoveredNode = node;
             
             if (!isNodeOnDiagonal(node))
             {
-                currentHoveredNode?.SetIsHovered(true);
+                currentHoveredNode.SetIsHovered(true);
             }
         }
 
@@ -43,7 +47,7 @@ namespace Inputs
         {
             if (node == null || currentSelectedNode == null)
             {
-                return false;
+                return true;
             }
             
             return node.XY.x != currentSelectedNode.XY.x && node.XY.y != currentSelectedNode.XY.y;
@@ -78,9 +82,16 @@ namespace Inputs
 
         public override void OnLeftMouseUp()
         {
-            currentSelectedNode?.SetIsSelected(false);
-            currentHoveredNode?.SetIsHovered(false);
-
+            if (currentSelectedNode != null)
+            {
+                currentSelectedNode.SetIsSelected(false);
+            }
+            
+            if (currentHoveredNode != null)
+            {
+                currentHoveredNode.SetIsHovered(false);
+            }
+            
             var node = GetNodeFromMousePosition();
             if (node == null)
             {
