@@ -31,18 +31,8 @@ public class RequestManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        Test();
     }
 
-    async void Test()
-    {
-        while (Application.isPlaying)
-        {
-            await Task.Yield();
-            GenerateRequest();
-        }
-    }
-    
     [ContextMenu("Generate")]
     public void GenerateRequest()
     {
