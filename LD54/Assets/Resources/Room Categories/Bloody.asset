@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 508c656e8dbb46de925aa4b26035a328, type: 3}
-  m_Name: Inside
+  m_Name: Bloody
   m_EditorClassIdentifier: 
-  Name: Inside
-  RoomColour: {fileID: 2100000, guid: 9f7f3a278f713fe4abe27a539261a4a4, type: 2}
+  Name: Bloody
+  RoomColour: {fileID: 2100000, guid: 073110d1aeaed0f41ba0ba6caae5ea41, type: 2}
   RoomTypes:
-  - {fileID: 11400000, guid: 6fa18fe08bedee741ae96ff0bf441e7f, type: 2}
-  - {fileID: 11400000, guid: b89a0f54f4f798849afcc6238bd31b50, type: 2}
+  - {fileID: 11400000, guid: 3c7466bed919ea64f8f134057951b418, type: 2}
+  - {fileID: 11400000, guid: b42e8dea851e9794e941bb03c3943982, type: 2}

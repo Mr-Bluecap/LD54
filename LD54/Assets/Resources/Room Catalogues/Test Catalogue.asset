@@ -17,3 +17,4 @@ MonoBehaviour:
   roomCategories:
   - {fileID: 11400000, guid: 49e149594d3eae8428092d72efa15153, type: 2}
   - {fileID: 11400000, guid: 8c0d819b79f93674e87d501cce2b8d1a, type: 2}
+  - {fileID: 11400000, guid: 9ee25b059d89e0f48862ae6d09c5d6aa, type: 2}

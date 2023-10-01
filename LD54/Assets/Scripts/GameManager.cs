@@ -52,14 +52,16 @@ public class GameManager : MonoBehaviour
         GenerateRequest();
     }
 
+    const int NumberOfTimeIntervals = 16;
+    
     async void StartLevelTimer()
     {
-        var secondsPerInterval = (int)(timeInSeconds * 1000 / 8);
+        var secondsPerInterval = (int)(timeInSeconds * 1000 / NumberOfTimeIntervals);
 
         var currentInterval = 0;
         timerText.text = GetTimeAsClock(currentInterval);
 
-        while (currentInterval < 8)
+        while (currentInterval < NumberOfTimeIntervals)
         {
             await Task.Delay(secondsPerInterval);
             currentInterval++;
@@ -74,13 +76,21 @@ public class GameManager : MonoBehaviour
         return numberOfElapsedIntervals switch
         {
             0 => "9:00 AM",
-            1 => "10:00 AM",
-            2 => "11:00 AM",
-            3 => "12:00 PM",
-            4 => "1:00 PM",
-            5 => "2:00 PM",
-            6 => "3:00 PM",
-            7 => "4:00 PM",
+            1 => "9:30 AM",
+            2 => "10:00 AM",
+            3 => "10:30 AM",
+            4 => "11:00 AM",
+            5 => "11:30 AM",
+            6 => "12:00 PM",
+            7 => "12:30 PM",
+            8 => "1:00 PM",
+            9 => "1:30 PM",
+            10 => "2:00 PM",
+            11 => "2:30 PM",
+            12 => "3:00 PM",
+            13 => "3:30 PM",
+            14 => "4:00 PM",
+            15 => "4:30 PM",
             _ => "5:00 PM"
         };
     }

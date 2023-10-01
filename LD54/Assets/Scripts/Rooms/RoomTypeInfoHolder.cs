@@ -20,6 +20,7 @@ public class RoomTypeInfoHolder : MonoBehaviour
         roomTypeName.text = roomType.Name;
         
         icon.enabled = roomType.Icon != null;
+        icon.material = roomType.RoomColour;
         icon.sprite = roomType.Icon;
     }
 }

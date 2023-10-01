@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RoomTypeButtonManager : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class RoomTypeButtonManager : MonoBehaviour
 
     [SerializeField]
     CustomLayoutGroup roomTypeLayoutGroup;
+
+    [SerializeField]
+    Image roomTypeBoard;
 
     void Awake()
     {
@@ -52,6 +56,10 @@ public class RoomTypeButtonManager : MonoBehaviour
             roomTypeLayoutGroup.AddElementToList(button.GetComponent<RectTransform>());
             button.SetupButton(roomType);
         }
+
+        var newMaterial = new Material(category.RoomColour);
+        newMaterial.shader = Shader.Find("UI/Default");
+        roomTypeBoard.material = newMaterial;
     }
 
     public void SelectCategory(RoomCategory category)
