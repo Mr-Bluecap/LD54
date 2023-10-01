@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Condition", menuName = "Conditions/Room Type/Size Comparison")]
 public class RoomTypeSizeComparisonRequestCondition : SizeComparisonRequestCondition
 {
     public RoomType roomType;
+    public override RoomCategory RoomCategory => null;
+    public override RoomType RoomType => roomType;
     
-    protected override int GetTotalRoomSize(List<Room> roomLayout)
+    protected override int GetTotalSize(List<Room> roomLayout)
     {
         var totalSize = 0;
 
@@ -21,20 +24,10 @@ public class RoomTypeSizeComparisonRequestCondition : SizeComparisonRequestCondi
         return totalSize;
     }
 
-    public override int NumberOfRoomsRequired()
-    {
-        return comparisonType switch
-        {
-            ComparisonType.Less_Than => 1,
-            ComparisonType.Equal_To => size,
-            ComparisonType.Greater_Than => size + 1,
-            _ => size
-        };
-    }
-
     public override string ConditionDescription()
     {
         var comparisonString = base.ConditionDescription();
-        return $"{roomType.Name} {comparisonString}";
+        var colour = $"#{roomType.RoomColour.color.ToHexString()}";
+        return $"Total <color={colour}>{roomType.Name}</color> Tiles {comparisonString}";
     }
 }

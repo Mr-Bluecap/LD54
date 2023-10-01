@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class SizeComparisonRequestCondition : RequestCondition
 {
-    public ComparisonType comparisonType;
-    public int size;
-
     public override bool IsConditionMet(List<Room> roomLayout)
     {
-        var roomSize = GetTotalRoomSize(roomLayout);
+        var roomSize = GetTotalSize(roomLayout);
 
         return comparisonType switch
         {
@@ -18,8 +16,30 @@ public abstract class SizeComparisonRequestCondition : RequestCondition
         };
     }
 
-    protected abstract int GetTotalRoomSize(List<Room> roomLayout);
+    protected abstract int GetTotalSize(List<Room> roomLayout);
 
+    public override int MinimumNumberOfRoomsRequired()
+    {
+        return comparisonType switch
+        {
+            ComparisonType.Less_Than => 1,
+            ComparisonType.Equal_To => size,
+            ComparisonType.Greater_Than => size + 1,
+            _ => size
+        };
+    }
+    
+    public override int MaximumNumberOfRoomsRequired()
+    {
+        return comparisonType switch
+        {
+            ComparisonType.Less_Than => size - 1,
+            ComparisonType.Equal_To => size,
+            ComparisonType.Greater_Than => MaximumNumberOfRequiredRoomsPerCondition,
+            _ => size
+        };
+    }
+    
     bool IsLessThan(int roomSize)
     {
         return roomSize < size && roomSize > 0;
