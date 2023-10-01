@@ -55,19 +55,29 @@ public class GameOverManager : MonoBehaviour
         partialRequestsScoreText.text = ScoreManager.Instance.PartialRequestsScore.ToString();
         failedRequestsScoreText.text = ScoreManager.Instance.FailedRequestsScore.ToString();
 
-        scoreText.text =$"${ScoreManager.Instance.TotalScore}";
+        scoreText.text = CleanedScore(ScoreManager.Instance.TotalScore);
 
         var currentHighScore = PlayerPrefs.GetInt(HighScoreKey, int.MinValue);
         
         if (currentHighScore >= ScoreManager.Instance.TotalScore)
         {
-            highScoreText.text = $"HIGHEST PROFIT: ${currentHighScore}";
+            highScoreText.text = $"HIGHEST PROFIT: {CleanedScore(currentHighScore)}";
         }
         else
         {
             highScoreText.text = "NEW HIGHEST PROFIT!";
             PlayerPrefs.SetInt(HighScoreKey, ScoreManager.Instance.TotalScore);
         }
+    }
+
+    string CleanedScore(int score)
+    {
+        if (score >= 0)
+        {
+            return $"${score}";
+        }
+        
+        return $"-${Mathf.Abs(score)}";
     }
 
     public void HideDisplay()
