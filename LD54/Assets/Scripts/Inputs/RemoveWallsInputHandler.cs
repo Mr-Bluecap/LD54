@@ -38,7 +38,7 @@ namespace Inputs
             }
             
             RoomLineManager.Instance.RemoveLine(line);
-            RoomManager.Instance.CreateRooms();
+            RoomManager.Instance.CreateRooms(true);
         }
         
         RoomLine GetRoomLineFromMousePosition()

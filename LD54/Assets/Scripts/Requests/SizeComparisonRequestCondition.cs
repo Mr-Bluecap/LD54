@@ -22,7 +22,7 @@ public abstract class SizeComparisonRequestCondition : RequestCondition
 
     bool IsLessThan(int roomSize)
     {
-        return roomSize < size;
+        return roomSize < size && roomSize > 0;
     }
 
     bool IsEqualTo(int roomSize)
@@ -33,6 +33,17 @@ public abstract class SizeComparisonRequestCondition : RequestCondition
     bool IsGreaterThan(int roomSize)
     {
         return roomSize > size;
+    }
+    
+    public override string ConditionDescription()
+    {
+        return comparisonType switch
+        {
+            ComparisonType.Less_Than => $"< {size}",
+            ComparisonType.Equal_To => $"= {size}",
+            ComparisonType.Greater_Than => $"> {size}",
+            _ => "Whatever"
+        };
     }
 }
 

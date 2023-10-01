@@ -140,4 +140,20 @@ public class RoomLineManager : MonoBehaviour
         allRoomLines.Clear();
         allOpenRoomLines.Clear();
     }
+    
+    public void RemoveAllLines()
+    {
+        for (int i = allRoomLines.Count - 1; i >= 0; i--)
+        {
+            LineDrawer.Instance.DestroyLine(allRoomLines[i], true);
+        }
+        
+        for (int i = allOpenRoomLines.Count - 1; i >= 0; i--)
+        {
+            LineDrawer.Instance.DestroyLine(allOpenRoomLines[i], true);
+        }
+        
+        allRoomLines.Clear();
+        allOpenRoomLines.Clear();
+    }
 }

@@ -103,7 +103,7 @@ namespace Inputs
             {
                 //Update room list
                 RoomLineManager.Instance.AddLine(line);
-                RoomManager.Instance.CreateRooms();
+                RoomManager.Instance.CreateRooms(true);
             }
         }
         

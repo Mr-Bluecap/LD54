@@ -4,6 +4,13 @@ namespace DefaultNamespace
 {
     public class MouseOptionsManager : MonoBehaviour
     {
+        public static MouseOptionsManager Instance;
+
+        void Awake()
+        {
+            Instance = this;
+        }
+        
         public void ActivateAddWallsMode()
         {
             InputManager.Instance.SetInputType(InputType.AddWalls);
@@ -14,15 +21,22 @@ namespace DefaultNamespace
             InputManager.Instance.SetInputType(InputType.RemoveWalls);
         }
         
-        public static void ActivateAssignRoomTypeMode()
+        public void ActivateAssignRoomTypeMode()
         {
             InputManager.Instance.SetInputType(InputType.AssignRoomType);
         }
         
-        public static void ActivateClearAssignRoomTypeMode()
+        public void ActivateClearAssignRoomTypeMode()
         {
             InputManager.Instance.SetInputType(InputType.AssignRoomType);
             RoomTypeAssignmentManager.Instance.SelectRoomType(RoomTypeAssignmentManager.Instance.DefaultRoomType);
+        }
+
+        public void ResetRoom()
+        {
+            RoomLineManager.Instance.RemoveAllLines();
+            ActivateAddWallsMode();
+            RoomManager.Instance.CreateRooms(false);
         }
     }
 }

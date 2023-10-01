@@ -17,7 +17,7 @@ public class RoomTypeButton : MonoBehaviour
     
     public void OnClicked()
     {
-        MouseOptionsManager.ActivateAssignRoomTypeMode();
+        MouseOptionsManager.Instance.ActivateAssignRoomTypeMode();
         RoomTypeAssignmentManager.Instance.SelectRoomType(roomType);
     }
 }

@@ -31,4 +31,10 @@ public class RoomTypeSizeComparisonRequestCondition : SizeComparisonRequestCondi
             _ => size
         };
     }
+
+    public override string ConditionDescription()
+    {
+        var comparisonString = base.ConditionDescription();
+        return $"{roomType.Name} {comparisonString}";
+    }
 }

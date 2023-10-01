@@ -31,7 +31,7 @@ public class RoomManager : MonoBehaviour
         roomSquaresToCheck = new Dictionary<RoomSquare, bool>();
     }
 
-    public void CreateRooms()
+    public void CreateRooms(bool keepCurrentRoomTypes)
     {
         previousRooms = new List<Room>(allRooms);
         allRooms.Clear();
@@ -45,7 +45,7 @@ public class RoomManager : MonoBehaviour
         
         CalculateRoomSquares();
         CalculateRooms();
-        UpdateRoomTypes();
+        UpdateRoomTypes(keepCurrentRoomTypes);
     }
 
     public Room? GetRoomFromRoomSquare(RoomSquare roomSquare)
@@ -127,11 +127,16 @@ public class RoomManager : MonoBehaviour
         return null;
     }
 
-    void UpdateRoomTypes()
+    void UpdateRoomTypes(bool keepCurrentRoomTypes)
     {
         foreach (var newRoom in allRooms)
         {
             newRoom.SetRoomType(RoomTypeAssignmentManager.Instance.DefaultRoomType);
+
+            if (!keepCurrentRoomTypes)
+            {
+                break;
+            }
             
             foreach (var oldRoom in previousRooms)
             {

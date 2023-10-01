@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,7 +8,13 @@ public class RequestManager : MonoBehaviour
 {
     public static RequestManager Instance;
 
-    public Request currentRequest;
+    Request currentRequest;
+
+    [SerializeField]
+    TextMeshProUGUI requirementsTextPrefab;
+
+    [SerializeField]
+    Transform requirementsHolder;
 
     void Awake()
     {
@@ -64,6 +70,7 @@ public class RequestManager : MonoBehaviour
         }
 
         currentRequest = new Request(selectedConditions);
+        DisplayRequirements();
     }
 
     bool IsRequestComplete(int numberOfRequiredRooms, int totalNumberOfRoomSquares)
@@ -82,10 +89,37 @@ public class RequestManager : MonoBehaviour
 
     public void CompleteRequest()
     {
-        var isSuccessful = currentRequest.EvaluateRequest(RoomManager.Instance.AllRooms);
-        
-        Debug.LogError($"Was Succesful? {isSuccessful}");
-        
+        var requestCompletionPercentage = currentRequest.GetCompletedRequestsAsPercentage(RoomManager.Instance.AllRooms);
+
+        ScoreManager.Instance.UpdateScore(requestCompletionPercentage);
         GameManager.Instance.CreateNewSequence();
+    }
+
+    void DisplayRequirements()
+    {
+        for (int i = requirementsHolder.childCount - 1; i >= 0; i--)
+        {
+            DestroyImmediate(requirementsHolder.GetChild(i).gameObject);
+        }
+        
+        var requirements = GenerateRequestRequirements();
+
+        for (int i = 0; i < requirements.Count; i++)
+        {
+            var conditionText = Instantiate(requirementsTextPrefab, requirementsHolder);
+            conditionText.text = requirements[i];
+        }
+    }
+    
+    List<string> GenerateRequestRequirements()
+    {
+        var requirements = new List<string>();
+
+        foreach (var condition in currentRequest.RequestConditions)
+        {
+            requirements.Add(condition.ConditionDescription());
+        }
+
+        return requirements;
     }
 }

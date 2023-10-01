@@ -76,7 +76,7 @@ public class NodeManager : MonoBehaviour
             }
         }
         
-        RoomManager.Instance.CreateRooms();
+        RoomManager.Instance.CreateRooms(false);
     }
 
     void DeleteAllNodes()

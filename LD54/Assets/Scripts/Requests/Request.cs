@@ -10,18 +10,20 @@ public class Request
         RequestConditions = requestConditions;
     }
 
-    public bool EvaluateRequest(List<Room> roomLayout)
+    public float GetCompletedRequestsAsPercentage(List<Room> roomLayout)
     {
+        var numberOfRequestsComplete = 0;
+        
         foreach (var condition in RequestConditions)
         {
             var isConditionComplete = condition.IsConditionMet(roomLayout);
 
-            if (!isConditionComplete)
+            if (isConditionComplete)
             {
-                return false;
+                numberOfRequestsComplete++;
             }
         }
 
-        return true;
+        return (float)numberOfRequestsComplete / RequestConditions.Count;
     }
 }

@@ -33,7 +33,8 @@ public class InputManager : MonoBehaviour
         {
             { InputType.AddWalls, new AddWallsInputHandler(this, nodeLayerMask, cameraMovementLayerMask) },
             { InputType.RemoveWalls, new RemoveWallsInputHandler(this, nodeLayerMask) },
-            { InputType.AssignRoomType, new AssignRoomTypeInputHandler(this, roomLayerMask) }
+            { InputType.AssignRoomType, new AssignRoomTypeInputHandler(this, roomLayerMask) },
+            { InputType.Null, null}
         };
     }
     
@@ -41,18 +42,18 @@ public class InputManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            currentInputHandler.OnLeftMouseDown();
+            currentInputHandler?.OnLeftMouseDown();
         }
         else if (Input.GetMouseButton(0))
         {
-            currentInputHandler.OnLeftMouseHold();
+            currentInputHandler?.OnLeftMouseHold();
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            currentInputHandler.OnLeftMouseUp();
+            currentInputHandler?.OnLeftMouseUp();
         }
         
-        currentInputHandler.OnMouseHover();
+        currentInputHandler?.OnMouseHover();
     }
 
     public void SetInputType(InputType newInputType)
@@ -66,5 +67,6 @@ public enum InputType
 {
     AddWalls,
     RemoveWalls,
-    AssignRoomType
+    AssignRoomType,
+    Null
 }
