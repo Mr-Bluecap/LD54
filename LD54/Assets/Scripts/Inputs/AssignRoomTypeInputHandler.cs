@@ -47,6 +47,7 @@ namespace Inputs
 
             var room = possibleRoom;
             room.SetRoomType(RoomTypeAssignmentManager.Instance.CurrentSelectedRoomType);
+            AudioManager.Instance.PlayPaint();
         }
         
         Room GetRoomFromMousePosition()

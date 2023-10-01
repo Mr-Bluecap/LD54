@@ -23,13 +23,6 @@ namespace Inputs
 
         public override void OnLeftMouseHold()
         {
-            
-        }
-
-        public override void OnLeftMouseUp()
-        {
-            //Check if drawing? - !LineDrawer.Instance.IsDrawing
-            
             var line = GetRoomLineFromMousePosition();
 
             if (line == null)
@@ -38,7 +31,13 @@ namespace Inputs
             }
             
             RoomLineManager.Instance.RemoveLine(line);
+            AudioManager.Instance.PlayDestroyWall();
             RoomManager.Instance.CreateRooms(true);
+        }
+
+        public override void OnLeftMouseUp()
+        {
+
         }
         
         RoomLine GetRoomLineFromMousePosition()

@@ -28,6 +28,8 @@ public class RoomLineManager : MonoBehaviour
             return;
         }
         
+        AudioManager.Instance.PlayCreateWall();
+        
         var nodesToCheck = isColumn
             ? NodeManager.Instance.GetNodesByColumn(line.StartNode.XY.x)
             : NodeManager.Instance.GetNodesByRow(line.StartNode.XY.y);
@@ -55,6 +57,11 @@ public class RoomLineManager : MonoBehaviour
             {
                 if (currentNode.HasConnection(previousNode))
                 {
+                    if (currentNode == finalNodeToCheck)
+                    {
+                        break;
+                    }
+                    
                     continue;
                 }
 

@@ -6,6 +6,9 @@ namespace DefaultNamespace
     {
         public static MouseOptionsManager Instance;
 
+        [SerializeField]
+        AudioSource clearRoomAudio;
+        
         void Awake()
         {
             Instance = this;
@@ -37,6 +40,9 @@ namespace DefaultNamespace
             RoomLineManager.Instance.RemoveAllLines();
             ActivateAddWallsMode();
             RoomManager.Instance.CreateRooms(false);
+            
+            clearRoomAudio.Stop();
+            clearRoomAudio.Play();
         }
     }
 }

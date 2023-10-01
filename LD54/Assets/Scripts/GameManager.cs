@@ -25,6 +25,12 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     GameObject submitButton;
 
+    [SerializeField]
+    AudioSource clockTickAudio;
+    
+    [SerializeField]
+    AudioSource whistleAudio;
+
     void Awake()
     {
         Instance = this;
@@ -33,6 +39,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         HideGeneralUI();
+        ClientManager.Instance.HideClient();
     }
 
     public void StartGame()
@@ -42,6 +49,9 @@ public class GameManager : MonoBehaviour
         ShowGeneralUI();
         CreateNewSequence();
         StartLevelTimer();
+        
+        clockTickAudio.Stop();
+        whistleAudio.Stop();
     }
 
     public void CreateNewSequence()
@@ -50,6 +60,7 @@ public class GameManager : MonoBehaviour
         MouseOptionsManager.Instance.ActivateAddWallsMode();
         GenerateMap();
         GenerateRequest();
+        ClientManager.Instance.CreateNewClient();
     }
 
     const int NumberOfTimeIntervals = 16;
@@ -66,6 +77,16 @@ public class GameManager : MonoBehaviour
             await Task.Delay(secondsPerInterval);
             currentInterval++;
             timerText.text = GetTimeAsClock(currentInterval);
+
+            if (currentInterval == NumberOfTimeIntervals - 1)
+            {
+                clockTickAudio.Play();
+            }
+            else if (currentInterval == NumberOfTimeIntervals)
+            {
+                clockTickAudio.Stop();
+                whistleAudio.Play();
+            }
         }
         
         CompleteGame();
@@ -104,6 +125,7 @@ public class GameManager : MonoBehaviour
         
         InputManager.Instance.SetInputType(InputType.Null);
         HideGeneralUI();
+        ClientManager.Instance.HideClient();
         GameOverManager.Instance.DisplayPanel();
     }
 

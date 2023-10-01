@@ -16,6 +16,12 @@ public class RequestManager : MonoBehaviour
     [SerializeField]
     Transform requirementsHolder;
 
+    [SerializeField]
+    AudioSource correctAudio;
+    
+    [SerializeField]
+    AudioSource wrongAudio;
+    
     void Awake()
     {
         Instance = this;
@@ -91,8 +97,25 @@ public class RequestManager : MonoBehaviour
     {
         var requestCompletionPercentage = currentRequest.GetCompletedRequestsAsPercentage(RoomManager.Instance.AllRooms);
 
+        PlayAudio(requestCompletionPercentage);
+        
         ScoreManager.Instance.UpdateScore(requestCompletionPercentage);
         GameManager.Instance.CreateNewSequence();
+    }
+
+    void PlayAudio(float completionPercentage)
+    {
+        correctAudio.Stop();
+        wrongAudio.Stop();
+        
+        if (completionPercentage >= 0.5f)
+        {
+            correctAudio.Play();
+        }
+        else
+        {
+            wrongAudio.Play();
+        }
     }
 
     void DisplayRequirements()

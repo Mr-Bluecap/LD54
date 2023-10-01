@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Inputs;
 using UnityEngine;
@@ -15,6 +16,18 @@ public class InputManager : MonoBehaviour
     [SerializeField]
     LayerMask roomLayerMask;
 
+    [SerializeField]
+    Texture2D normalCursor;
+    
+    [SerializeField]
+    Texture2D drawCursor;
+    
+    [SerializeField]
+    Texture2D deleteCursor;
+    
+    [SerializeField]
+    Texture2D paintCursor;
+
     Dictionary<InputType, InputHandler> allInputHandlers;
 
     InputHandler currentInputHandler;
@@ -25,6 +38,7 @@ public class InputManager : MonoBehaviour
         
         SetupInputHandlers();
         SetInputType(InputType.AddWalls);
+        Cursor.SetCursor(normalCursor, Vector2.zero, CursorMode.Auto);
     }
 
     void SetupInputHandlers()
@@ -60,6 +74,23 @@ public class InputManager : MonoBehaviour
     {
         Debug.LogWarning($"[INPUT] New Input Type: {newInputType.ToString()}");
         currentInputHandler = allInputHandlers[newInputType];
+
+        switch (newInputType)
+        {
+            case InputType.AddWalls:
+                Cursor.SetCursor(drawCursor, Vector2.zero, CursorMode.Auto);
+                break;
+            case InputType.RemoveWalls:
+                Cursor.SetCursor(deleteCursor, Vector2.zero, CursorMode.Auto);
+                break;
+            case InputType.AssignRoomType:
+                Cursor.SetCursor(paintCursor, Vector2.zero, CursorMode.Auto);
+                break;
+            case InputType.Null:
+            default:
+                Cursor.SetCursor(normalCursor, Vector2.zero, CursorMode.Auto);
+                break;
+        }
     }
 }
 
