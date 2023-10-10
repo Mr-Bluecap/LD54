@@ -28,6 +28,10 @@ public class RequestManager : MonoBehaviour
 
     Dictionary<RoomCategory, int> minimumNumberOfRoomsPerCategory;
     
+    Dictionary<RoomCategory, RequestCondition> currentCategoryConditions;
+    Dictionary<RoomCategory, List<RequestCondition>> roomTypeConditionsByCategory;
+    const int MaximumNumberOfCategoryRequests = 2;
+    
     void Awake()
     {
         Instance = this;
@@ -40,7 +44,7 @@ public class RequestManager : MonoBehaviour
         
         try
         {
-            requestConditions = CreateRequestConditions();
+            requestConditions = CreateRequest();
         }
         catch (Exception e)
         {
@@ -50,88 +54,251 @@ public class RequestManager : MonoBehaviour
         currentRequest = new Request(requestConditions);
         DisplayRequirements();
     }
-
-    List<RequestCondition> CreateRequestConditions()
+    
+    List<RequestCondition> CreateRequest()
     {
-        var selectedConditions = new List<RequestCondition>();
-        minimumNumberOfRoomsPerCategory = new Dictionary<RoomCategory, int>();
+        currentCategoryConditions = new Dictionary<RoomCategory, RequestCondition>();
+        roomTypeConditionsByCategory = new Dictionary<RoomCategory, List<RequestCondition>>();
 
         foreach (var category in RoomTypeAssignmentManager.Instance.RoomCategories)
         {
-            minimumNumberOfRoomsPerCategory.Add(category, 0);
+            roomTypeConditionsByCategory.Add(category, new List<RequestCondition>());
+        }
+
+        var totalRoomSquares = RoomManager.Instance.AllRoomSquares.Count;
+        
+        
+        var listOfCategoryConditions = new List<RequestCondition>();
+        var listOfRoomTypeConditions = new List<RequestCondition>();
+        
+        var allConditions = Resources.LoadAll<RequestCondition>("Request Conditions").ToList();
+
+        foreach (var condition in allConditions)
+        {
+            if (condition.RoomCategory != null)
+            {
+                listOfCategoryConditions.Add(condition);
+            }
+            else
+            {
+                listOfRoomTypeConditions.Add(condition);
+            }
         }
         
-        var totalRoomSquares = RoomManager.Instance.AllRoomSquares.Count;
+        DetermineCategoryConditions(listOfCategoryConditions, totalRoomSquares);
+        DetermineRoomTypeCategoryConditions(listOfRoomTypeConditions, totalRoomSquares);
 
-        List<RequestCondition> allConditions = Resources.LoadAll<RequestCondition>("Request Conditions").ToList();
-        
-        var listOfUsedRoomTypes = new List<RoomType>();
+        var selectedConditions = new List<RequestCondition>();
 
-        var isRequestComplete = false;
-
-        while (!isRequestComplete)
+        foreach (var condition in currentCategoryConditions)
         {
-            if (allConditions.Count == 0)
-            {
-                isRequestComplete = true;
-                continue;
-            }
-            
-            var randomConditionIndex = Random.Range(0, allConditions.Count);
+            selectedConditions.Add(condition.Value);
+        }
 
-            var potentialCondition = allConditions[randomConditionIndex];
-
-            if (selectedConditions.Contains(potentialCondition) || (potentialCondition.RoomType != null && listOfUsedRoomTypes.Contains(potentialCondition.RoomType)))
+        foreach (var category in roomTypeConditionsByCategory)
+        {
+            foreach (var condition in category.Value)
             {
-                isRequestComplete = IsRequestComplete(GetNumberOfRequiredSquares(), totalRoomSquares, selectedConditions.Count);
-                allConditions.Remove(potentialCondition);
-                continue;
+                selectedConditions.Add(condition);
             }
-
-            var numberOfRoomSquaresRequiredForCondition = 0;
-            
-            if (potentialCondition.RoomType != null)
-            {
-                numberOfRoomSquaresRequiredForCondition = potentialCondition.MinimumNumberOfRoomsRequired();
-
-                if (GetNumberOfRequiredSquares() + numberOfRoomSquaresRequiredForCondition > totalRoomSquares)
-                {
-                    isRequestComplete = IsRequestComplete(GetNumberOfRequiredSquares(), totalRoomSquares, selectedConditions.Count);
-                    allConditions.Remove(potentialCondition);
-                    continue;
-                }
-            }
-            else
-            {
-                var maxNumberOfRoomRequired = potentialCondition.MaximumNumberOfRoomsRequired();
-
-                if (maxNumberOfRoomRequired < minimumNumberOfRoomsPerCategory[potentialCondition.RoomCategory])
-                {
-                    isRequestComplete = IsRequestComplete(GetNumberOfRequiredSquares(), totalRoomSquares, selectedConditions.Count);
-                    allConditions.Remove(potentialCondition);
-                    continue;
-                }
-            }
-            
-            selectedConditions.Add(potentialCondition);
-
-            if (potentialCondition.RoomType != null)
-            {
-                listOfUsedRoomTypes.Add(potentialCondition.RoomType);
-                minimumNumberOfRoomsPerCategory[GetCategoryForType(potentialCondition.RoomType)] += numberOfRoomSquaresRequiredForCondition;
-            }
-            else
-            {
-                var minimumSquaresNeededForCategory = potentialCondition.MinimumNumberOfRoomsRequired();
-                minimumNumberOfRoomsPerCategory[potentialCondition.RoomCategory] = Mathf.Min(
-                    minimumNumberOfRoomsPerCategory[potentialCondition.RoomCategory], minimumSquaresNeededForCategory);
-            }
-            
-            allConditions.Remove(potentialCondition);
-            isRequestComplete = IsRequestComplete(GetNumberOfRequiredSquares(), totalRoomSquares, selectedConditions.Count);
         }
 
         return selectedConditions;
+    }
+
+    void DetermineRoomTypeCategoryConditions(List<RequestCondition> allRoomTypeConditions, int totalNumberOfRoomSquares)
+    {
+        var shouldAddRoomTypeCondition = ShouldAddRoomTypeCondition(totalNumberOfRoomSquares);
+
+        while (shouldAddRoomTypeCondition)
+        {
+            var randomIndex = Random.Range(0, allRoomTypeConditions.Count);
+            var possibleCondition = allRoomTypeConditions[randomIndex];
+
+            if (GetPotentialRoomSquaresRequirement(possibleCondition) > totalNumberOfRoomSquares)
+            {
+                allRoomTypeConditions.Remove(possibleCondition);
+                shouldAddRoomTypeCondition = ShouldAddRoomTypeCondition(totalNumberOfRoomSquares);
+                continue;
+            }
+
+            var possibleCategory = GetCategoryForType(possibleCondition.RoomType);
+            
+            if (currentCategoryConditions.ContainsKey(possibleCategory))
+            {
+                if (GetPotentialMinimumNumberOfRoomSquaresRequiredForCategory(possibleCondition) >
+                    currentCategoryConditions[possibleCategory].MaximumNumberOfRoomsRequired())
+                {
+                    allRoomTypeConditions.Remove(possibleCondition);
+                    shouldAddRoomTypeCondition = ShouldAddRoomTypeCondition(totalNumberOfRoomSquares);
+                    continue;
+                }
+            }
+            
+            roomTypeConditionsByCategory[possibleCategory].Add(possibleCondition);
+            allRoomTypeConditions.Remove(possibleCondition);
+            shouldAddRoomTypeCondition = ShouldAddRoomTypeCondition(totalNumberOfRoomSquares);
+        }
+    }
+
+    int GetRequiredMinimumNUmberOfRoomSquares()
+    {
+        var totalRoomSquaresRequired = 0;
+
+        foreach (var category in RoomTypeAssignmentManager.Instance.RoomCategories)
+        {
+            totalRoomSquaresRequired += GetMinimumNumberOfRoomSquaresRequiredForCategory(category);;
+        }
+
+        return totalRoomSquaresRequired;
+    }
+    
+    int GetPotentialRoomSquaresRequirement(RequestCondition condition)
+    {
+        if (condition.RoomType == null)
+        {
+            return int.MaxValue;
+        }
+
+        var newCategory = GetCategoryForType(condition.RoomType);
+        var possibleAddition = condition.MinimumNumberOfRoomsRequired();
+        
+        var totalRoomSquaresRequired = 0;
+
+        foreach (var category in RoomTypeAssignmentManager.Instance.RoomCategories)
+        {
+            var roomSquaresToAdd = category == newCategory
+                ? GetMinimumNumberOfRoomSquaresRequiredForCategory(category, possibleAddition)
+                : GetMinimumNumberOfRoomSquaresRequiredForCategory(category);
+
+            totalRoomSquaresRequired += roomSquaresToAdd;
+        }
+
+        return totalRoomSquaresRequired;
+    }
+
+    int GetMinimumNumberOfRoomSquaresRequiredForCategory(RoomCategory category, int possibleAddition = 0)
+    {
+        var currentNumberOfRoomSquaresRequired = 0;
+        
+        foreach (var requestCondition in roomTypeConditionsByCategory[category])
+        {
+            currentNumberOfRoomSquaresRequired += requestCondition.MinimumNumberOfRoomsRequired();
+        }
+
+        currentNumberOfRoomSquaresRequired += possibleAddition;
+
+        var requiredMinimumFromCategory = currentCategoryConditions.ContainsKey(category)
+            ? currentCategoryConditions[category].MinimumNumberOfRoomsRequired()
+            : 0;
+
+        return Mathf.Max(currentNumberOfRoomSquaresRequired, requiredMinimumFromCategory);
+    }
+    
+    int GetPotentialMinimumNumberOfRoomSquaresRequiredForCategory(RequestCondition condition)
+    {
+        var currentNumberOfRoomSquaresRequired = 0;
+        var category = GetCategoryForType(condition.RoomType);
+        
+        foreach (var requestCondition in roomTypeConditionsByCategory[category])
+        {
+            currentNumberOfRoomSquaresRequired += requestCondition.MinimumNumberOfRoomsRequired();
+        }
+
+        currentNumberOfRoomSquaresRequired += condition.MinimumNumberOfRoomsRequired();
+
+        var requiredMinimumFromCategory = currentCategoryConditions.ContainsKey(category)
+            ? currentCategoryConditions[category].MinimumNumberOfRoomsRequired()
+            : 0;
+
+        return Mathf.Max(currentNumberOfRoomSquaresRequired, requiredMinimumFromCategory);
+    }
+    
+    bool ShouldAddRoomTypeCondition(int totalNumberOfRoomSquares)
+    {
+        var totalNumberOfConditions = 0;
+        totalNumberOfConditions += currentCategoryConditions.Count;
+
+        foreach (var categoryPair in roomTypeConditionsByCategory)
+        {
+            totalNumberOfConditions += categoryPair.Value.Count;
+        }
+
+        if (totalNumberOfConditions == 0)
+        {
+            return true;
+        }
+
+        if (totalNumberOfConditions == MaximumNumberOfRequests)
+        {
+            return false;
+        }
+
+        var numberOfRequiredRooms = GetRequiredMinimumNUmberOfRoomSquares();
+        
+        var percentageOfRoomsUsed = (float)numberOfRequiredRooms / totalNumberOfRoomSquares;
+
+        var randomIndex = Random.Range(0f, 1f);
+
+        return randomIndex < percentageOfRoomsUsed;
+    }
+
+    void DetermineCategoryConditions(List<RequestCondition> allCategoryConditions, int totalNumberOfRoomSquares)
+    {
+        var shouldAddCategoryCondition = ShouldAddCategoryCondition(allCategoryConditions.Count, totalNumberOfRoomSquares);
+
+        while (shouldAddCategoryCondition)
+        {
+            var randomIndex = Random.Range(0, allCategoryConditions.Count);
+            var possibleCondition = allCategoryConditions[randomIndex];
+
+            if (currentCategoryConditions.ContainsKey(possibleCondition.RoomCategory))
+            {
+                allCategoryConditions.Remove(possibleCondition);
+                shouldAddCategoryCondition = ShouldAddCategoryCondition(allCategoryConditions.Count, totalNumberOfRoomSquares);
+                continue;
+            }
+
+            var potentialNumberOfRequiredRoomSquares = GetMinimumNumberOfSquaresRequiredForCategories() +
+                                                       possibleCondition.MinimumNumberOfRoomsRequired();
+
+            if (potentialNumberOfRequiredRoomSquares >= totalNumberOfRoomSquares)
+            {
+                allCategoryConditions.Remove(possibleCondition);
+                shouldAddCategoryCondition = ShouldAddCategoryCondition(allCategoryConditions.Count, totalNumberOfRoomSquares);
+                continue;
+            }
+            
+            currentCategoryConditions.Add(possibleCondition.RoomCategory, possibleCondition);
+            allCategoryConditions.Remove(possibleCondition);
+            shouldAddCategoryCondition = ShouldAddCategoryCondition(allCategoryConditions.Count, totalNumberOfRoomSquares);
+        }
+    }
+
+    bool ShouldAddCategoryCondition(int numberOfAvailableConditions, int totalNumberOfRoomSquares)
+    {
+        if (currentCategoryConditions.Count == MaximumNumberOfCategoryRequests || numberOfAvailableConditions == 0)
+        {
+            return false;
+        }
+        
+        var randomIndex = Random.Range(0, 1f);
+
+        var newCategoryThreshold = GetMinimumNumberOfSquaresRequiredForCategories() / (float)totalNumberOfRoomSquares + 0.1f;
+
+        return randomIndex > newCategoryThreshold;
+    }
+
+    int GetMinimumNumberOfSquaresRequiredForCategories()
+    {
+        var count = 0;
+        
+        foreach (var categoryCondition in currentCategoryConditions)
+        {
+            count += categoryCondition.Value.MinimumNumberOfRoomsRequired();
+        }
+
+        return count;
     }
 
     List<RequestCondition> CreateSimpleConditionList()
@@ -142,18 +309,6 @@ public class RequestManager : MonoBehaviour
         var newConditionsList = new List<RequestCondition> { allConditions[randomIndex] };
 
         return newConditionsList;
-    }
-    
-    int GetNumberOfRequiredSquares()
-    {
-        var totalSquares = 0;
-        
-        foreach (var pair in minimumNumberOfRoomsPerCategory)
-        {
-            totalSquares += pair.Value;
-        }
-
-        return totalSquares;
     }
 
     RoomCategory GetCategoryForType(RoomType type)
@@ -170,25 +325,6 @@ public class RequestManager : MonoBehaviour
         }
 
         return RoomTypeAssignmentManager.Instance.RoomCategories[0];
-    }
-
-    bool IsRequestComplete(int numberOfRequiredRooms, int totalNumberOfRoomSquares, int numberOfRequests)
-    {
-        if (numberOfRequiredRooms == 0)
-        {
-            return false;
-        }
-
-        if (numberOfRequests == MaximumNumberOfRequests)
-        {
-            return true;
-        }
-
-        var percentageOfRoomsUsed = (float)numberOfRequiredRooms / totalNumberOfRoomSquares;
-
-        var randomIndex = Random.Range(0f, 1f);
-
-        return randomIndex < percentageOfRoomsUsed;
     }
 
     public void CompleteRequest()

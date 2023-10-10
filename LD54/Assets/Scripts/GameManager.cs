@@ -1,6 +1,5 @@
-using System;
+using System.Collections;
 using System.Linq;
-using System.Threading.Tasks;
 using DefaultNamespace;
 using TMPro;
 using UnityEngine;
@@ -9,6 +8,7 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    const int NumberOfTimeIntervals = 16;
     
     [SerializeField]
     float timeInSeconds = 120f;
@@ -34,6 +34,9 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        
+        secondsPerInterval = timeInSeconds / NumberOfTimeIntervals;
+        currentInterval = NumberOfTimeIntervals;
     }
 
     void Start()
@@ -48,10 +51,10 @@ public class GameManager : MonoBehaviour
         ScoreManager.Instance.ResetScore();
         ShowGeneralUI();
         CreateNewSequence();
-        StartLevelTimer();
-        
+
         clockTickAudio.Stop();
         whistleAudio.Stop();
+        ResetTimer();
     }
 
     public void CreateNewSequence()
@@ -63,33 +66,69 @@ public class GameManager : MonoBehaviour
         ClientManager.Instance.CreateNewClient();
     }
 
-    const int NumberOfTimeIntervals = 16;
-    
-    async void StartLevelTimer()
-    {
-        var secondsPerInterval = (int)(timeInSeconds * 1000 / NumberOfTimeIntervals);
+    // IEnumerator StartLevelTimer()
+    // {
+    //     var currentInterval = 0;
+    //     timerText.text = GetTimeAsClock(currentInterval);
+    //
+    //     while (currentInterval < NumberOfTimeIntervals)
+    //     {
+    //         yield return new WaitForSeconds(secondsPerInterval);
+    //         currentInterval++;
+    //         timerText.text = GetTimeAsClock(currentInterval);
+    //
+    //         if (currentInterval == NumberOfTimeIntervals - 1)
+    //         {
+    //             clockTickAudio.Play();
+    //         }
+    //         else if (currentInterval == NumberOfTimeIntervals)
+    //         {
+    //             clockTickAudio.Stop();
+    //             whistleAudio.Play();
+    //         }
+    //     }
+    //     
+    //     CompleteGame();
+    // }
 
-        var currentInterval = 0;
+    float secondsPerInterval;
+
+    float currentTimer = 0;
+    int currentInterval = 0;
+
+    void ResetTimer()
+    {
+        currentTimer = 0;
+        currentInterval = 0;
+        
+        timerText.text = GetTimeAsClock(currentInterval);
+    }
+    
+    void Update()
+    {
+        currentTimer += Time.deltaTime;
+
+        if (currentTimer < secondsPerInterval || currentInterval >= NumberOfTimeIntervals)
+        {
+            return;
+        }
+
+        currentTimer = 0;
+        
+        currentInterval++;
         timerText.text = GetTimeAsClock(currentInterval);
 
-        while (currentInterval < NumberOfTimeIntervals)
+        if (currentInterval == NumberOfTimeIntervals - 1)
         {
-            await Task.Delay(secondsPerInterval);
-            currentInterval++;
-            timerText.text = GetTimeAsClock(currentInterval);
-
-            if (currentInterval == NumberOfTimeIntervals - 1)
-            {
-                clockTickAudio.Play();
-            }
-            else if (currentInterval == NumberOfTimeIntervals)
-            {
-                clockTickAudio.Stop();
-                whistleAudio.Play();
-            }
+            clockTickAudio.Play();
         }
-        
-        CompleteGame();
+        else if (currentInterval == NumberOfTimeIntervals)
+        {
+            clockTickAudio.Stop();
+            whistleAudio.Play();
+            
+            CompleteGame();
+        }
     }
 
     string GetTimeAsClock(int numberOfElapsedIntervals)
