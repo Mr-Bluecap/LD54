@@ -46,6 +46,7 @@ public class RoomManager : MonoBehaviour
         CalculateRoomSquares();
         CalculateRooms();
         UpdateRoomTypes(keepCurrentRoomTypes);
+        RequestManager.Instance.UpdateRequirements();
     }
 
     public Room? GetRoomFromRoomSquare(RoomSquare roomSquare)

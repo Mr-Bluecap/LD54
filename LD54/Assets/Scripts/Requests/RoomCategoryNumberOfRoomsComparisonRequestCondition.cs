@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace DefaultNamespace.Requests
@@ -23,6 +24,13 @@ namespace DefaultNamespace.Requests
             }
 
             return totalNumberOfRooms;
+        }
+        
+        public override string ConditionDescription()
+        {
+            var comparisonString = base.ConditionDescription();
+            var colour = $"#{roomCategory.RoomColour.color.ToHexString()}";
+            return $"Number Of <color={colour}>{roomCategory.Name}</color> Rooms {comparisonString}";
         }
     }
 }

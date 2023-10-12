@@ -53,7 +53,7 @@ public abstract class NumberOfRoomsComparisonRequestCondition : RequestCondition
     
     bool IsLessThan(int roomSize)
     {
-        return roomSize < size;
+        return roomSize < size && roomSize > 0;
     }
 
     bool IsEqualTo(int roomSize)

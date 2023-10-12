@@ -1,8 +1,18 @@
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameOverManager : MonoBehaviour
 {
+    [Serializable]
+    struct BossComment
+    {
+        public int scoreThreshold;
+        public string[] scoreBossComments;
+    }
+    
     public static GameOverManager Instance;
     
     const string HighScoreKey = "HighScore";
@@ -37,6 +47,15 @@ public class GameOverManager : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI highScoreText;
 
+    [SerializeField]
+    TextMeshProUGUI tutorialText;
+
+    [SerializeField]
+    TextMeshProUGUI bossCommentText;
+    
+    [SerializeField]
+    List<BossComment> bossComments;
+    
     void Awake()
     {
         Instance = this;
@@ -46,6 +65,8 @@ public class GameOverManager : MonoBehaviour
     {
         gameOverPanel.SetActive(true);
         scorePanel.SetActive(true);
+
+        tutorialText.enabled = false;
 
         completedRequestsValueText.text = $"x {ScoreManager.Instance.CompletedRequestsCount}";
         partialRequestsValueText.text = $"x {ScoreManager.Instance.PartialRequestsCount}";
@@ -68,8 +89,24 @@ public class GameOverManager : MonoBehaviour
             highScoreText.text = "NEW HIGHEST PROFIT!";
             PlayerPrefs.SetInt(HighScoreKey, ScoreManager.Instance.TotalScore);
         }
+
+        bossCommentText.text = GetRandomBossComment(ScoreManager.Instance.TotalScore);
     }
 
+    string GetRandomBossComment(int score)
+    {
+        for (int i = 0; i < bossComments.Count; i++)
+        {
+            if (score >= bossComments[i].scoreThreshold || i == bossComments.Count - 1)
+            {
+                var randomIndex = Random.Range(0, bossComments[i].scoreBossComments.Length);
+                return bossComments[i].scoreBossComments[randomIndex];
+            }
+        }
+
+        return "...You're fired";
+    }
+    
     string CleanedScore(int score)
     {
         if (score >= 0)

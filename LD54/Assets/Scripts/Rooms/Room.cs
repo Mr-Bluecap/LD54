@@ -48,6 +48,7 @@ public class Room
         currentRoomType = newRoomType;
         SetColoursForRoomSquares(newRoomType.RoomColour);
         DisplayRoomInformation();
+        RequestManager.Instance.UpdateRequirements();
     }
 
     public void ShowPotentialRoomType(RoomType newPotentialRoomType)

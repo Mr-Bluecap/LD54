@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DefaultNamespace;
 using DefaultNamespace.Requests;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class RequestManager : MonoBehaviour
@@ -14,8 +16,9 @@ public class RequestManager : MonoBehaviour
 
     Request currentRequest;
 
+    [FormerlySerializedAs("requirementsTextPrefab")]
     [SerializeField]
-    TextMeshProUGUI requirementsTextPrefab;
+    RequestRequirementDisplay requirementDisplay;
 
     [SerializeField]
     Transform requirementsHolder;
@@ -363,8 +366,26 @@ public class RequestManager : MonoBehaviour
 
         for (int i = 0; i < requirements.Count; i++)
         {
-            var conditionText = Instantiate(requirementsTextPrefab, requirementsHolder);
-            conditionText.text = requirements[i];
+            var conditionText = Instantiate(requirementDisplay, requirementsHolder);
+            conditionText.UpdateConditionText(requirements[i]);
+        }
+    }
+
+    public void UpdateRequirements()
+    {
+        if (currentRequest == null)
+        {
+            return;
+        }
+        
+        for (int i = 0; i < currentRequest.RequestConditions.Count; i++)
+        {
+            if (requirementsHolder.GetChild(i).TryGetComponent<RequestRequirementDisplay>(out var requirement))
+            {
+                var isComplete = currentRequest.RequestConditions[i].IsConditionMet(RoomManager.Instance.AllRooms);
+                
+                requirement.UpdateProgress(isComplete);
+            }
         }
     }
     

@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +20,9 @@ public class RoomTypeButtonManager : MonoBehaviour
 
     [SerializeField]
     Image roomTypeBoard;
+
+    [SerializeField]
+    TextMeshProUGUI categoryTitleText;
 
     void Awake()
     {
@@ -60,6 +64,8 @@ public class RoomTypeButtonManager : MonoBehaviour
         var newMaterial = new Material(category.RoomColour);
         newMaterial.shader = Shader.Find("UI/Default");
         roomTypeBoard.material = newMaterial;
+
+        categoryTitleText.text = category.Name;
     }
 
     public void SelectCategory(RoomCategory category)
